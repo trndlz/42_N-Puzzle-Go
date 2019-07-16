@@ -40,13 +40,10 @@ func CreateNeighbors(puzzle []int, size int) map[string][]int {
 
 	empty := g.FindIndexSlice(puzzle, 0)
 	up, down, left, right := checkMoves(size, empty)
-	fmt.Printf("up %d, down %d, left %d, right %d\n", up, down, left, right)
-
 	moves := up + down + left + right
-	fmt.Printf("\nthere are %d possible moves\n", moves)
 	neighbors := map[string][]int{}
 	for moves > 0 {
-		key := fmt.Sprintf("neighbor%d", moves)
+		key := fmt.Sprintf("%d", moves)
 		neighbor := make([]int, len(puzzle))
 		copy(neighbor, puzzle)
 		neighbors[key] = neighbor
@@ -67,6 +64,4 @@ func CreateNeighbors(puzzle []int, size int) map[string][]int {
 		moves--
 	}
 	return neighbors
-	// return neighbors
-	// how to return a map[string][]int
 }

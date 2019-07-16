@@ -7,6 +7,16 @@ import (
 	"os"
 )
 
+// func IntToString2() string {
+//     a := []int{1, 2, 3, 4, 5}
+//     b := make([]string, len(a))
+//     for i, v := range a {
+//         b[i] = strconv.Itoa(v)
+//     }
+
+//     return strings.Join(b, ",")
+// }
+
 func main() {
 
 	size, solve, iterations := p.CheckFlags()

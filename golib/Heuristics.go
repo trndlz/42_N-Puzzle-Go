@@ -33,7 +33,7 @@ func ManhattanDistance(val int, indexBoard int, size int, target []int) int {
 	return (absInt(xT-xC) + absInt(yT-yC))
 }
 
-// Manhattan returns the sum of manhattan distances .
+// Manhattan returns the sum of manhattan distances
 func Manhattan(board []int, target []int, s int) int {
 	length := s * s
 	manhattan := 0
