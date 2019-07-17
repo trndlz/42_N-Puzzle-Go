@@ -9,17 +9,10 @@ import (
 )
 
 func main() {
-	size, solve, iterations := p.GetFlags()
-	Puzzle := l.MakeRandomBoard(size, solve, iterations)
+	options := p.GetFlags()
+	Puzzle := l.MakeRandomBoard(options)
 	fmt.Println(Puzzle)
-	//
-	// var Puzzle []int
-	// if size == 0 && solve == false && iterations == 0 {
-	// 	Puzzle, size = p.ReadBoardFromFile(Puzzle, size)
-	// } else {
-	// 	Puzzle = p.GenerateRandomBoard(size, solve, iterations)
-	// 	//s.MovePieces(puzzle, size)
-	// }
-	s.Solver(Puzzle, size, solve, iterations)
+	// fmt.Println(heuristics)
+	s.Solver(Puzzle, options)
 	os.Exit(1)
 }

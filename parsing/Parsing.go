@@ -1,87 +1,19 @@
 package parsing
 
 import (
-	g "N-Puzzle-Go/golib"
+	l "N-Puzzle-Go/golib"
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"math/rand"
 	"os"
-	"regexp"
-	"strconv"
 	"strings"
 )
 
-func GenerateRandomBoard(size int, solve bool, iterations int) []int {
-	//	fmt.Println("\nGenerating random board...\n")
-
-	// generate a shuffled set of numbers
-	fmt.Println(solve)
-	maxNb := size * size
-	numbers := g.MakeRangeNum(0, maxNb-1)
-	rand.Shuffle(len(numbers), func(i, j int) {
-		numbers[i], numbers[j] = numbers[j], numbers[i]
-	})
-	// generate + fill board
-	Puzzle := make([]int, maxNb)
-	index := 0
-	for i := 0; i < maxNb; i++ {
-		Puzzle[i] = numbers[index]
-		index++
-	}
-	//	fmt.Println(Puzzle)
-	Puzzle = g.SpiralMatrix(Puzzle, size)
-	return Puzzle
-}
-
-func ReadBoardFromFile(Puzzle []int, size int) ([]int, int) {
-
-	args := os.Args[1:]
-	arg := strings.Join(args, "")
-	file, err := ioutil.ReadFile(arg)
-	g.Check(err)
-
-	if strings.ContainsAny(string(file), ".") || strings.ContainsAny(string(file), "-") {
-		fmt.Println("Error: Board values cannot be negative or floats.")
-		os.Exit(1)
-	}
-
-	re := regexp.MustCompile("[-+]?[0-9]+") // finds all numbers, including negative
-	// re := regexp.MustCompile("[-+]?[0-9]*\\.?[0-9]+") // finds all numbers, including negative and floats
-	// re := regexp.MustCompile("[^1-9]") // finds all non-numbers
-
-	numbers := re.FindAllString(string(file), -1)
-	fmt.Print("puzzle = %s", numbers)
-
-	// convert []string array to []int slice
-	i := -1
-	for _, number := range numbers {
-		if i++; i == 0 {
-			size, err = strconv.Atoi(number)
-			g.Check(err)
-			continue
-		}
-		integer, err := strconv.Atoi(number)
-		g.Check(err)
-		Puzzle = append(Puzzle, integer)
-	}
-
-	var filtered int
-	Puzzle, filtered = g.FilterDuplicates(Puzzle)
-	if ((i - filtered) % size) != 0 {
-		fmt.Print("\n Not enough pieces to fill board!\n")
-		os.Exit(1)
-	}
-	Puzzle = g.SpiralMatrix(Puzzle, size)
-	g.PrintBoard(Puzzle, size)
-	return Puzzle, size
-}
-
 // GetFlags returns the values of the arguments given from user
-func GetFlags() (int, bool, int) {
+func GetFlags() *l.NPuzzleOptions {
 	sizePtr := flag.Int("n", 3, "Puzzle dimension")
 	unsolvablePtr := flag.Bool("u", false, "Unsolveable puzzle (default = false)")
-	iterationsPtr := flag.Int("i", 10, "Puzzle complexity")
+	iterationsPtr := flag.Int("i", 200, "Puzzle complexity")
+	heuristicsPtr := flag.Int("h", 0, "Heuristics:\n\t0: Manhattan\n\t1: Hamming\n\t2: Linear Conflict")
 	// filePtr := flag.String("f", "", "Input as file")
 
 	flag.Parse()
@@ -90,9 +22,9 @@ func GetFlags() (int, bool, int) {
 	arg := strings.Join(args, "")
 	file := strings.Contains(arg, ".txt")
 
-	if len(args) == 1 && file {
-		return 0, false, 0
-	}
+	// if len(args) == 1 && file {
+	// 	return 0, 0, false, 0
+	// }
 
 	if len(args) > 1 && file {
 		fmt.Println("Error: must input one file OR flags as argument.")
@@ -114,9 +46,21 @@ func GetFlags() (int, bool, int) {
 		os.Exit(1)
 	}
 
-	solve := !*unsolvablePtr
-	size := *sizePtr
-	iterations := *iterationsPtr
+	return &l.NPuzzleOptions{
+		Heuristics: *heuristicsPtr,
+		SearchAlgo: 0,
+		Solvable:   !*unsolvablePtr,
+		Iterations: *iterationsPtr,
+		Size:       *sizePtr,
+	}
 
-	return size, solve, iterations
+	// return size, solve, iterations, heuristics
 }
+
+// type NPuzzleOptions struct {
+// 	heuristics int
+// 	searchAlgo int
+// 	solvable   bool
+// 	iterations int
+// 	size       int
+// }

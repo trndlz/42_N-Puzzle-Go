@@ -1,28 +1,31 @@
 package solver
 
 import (
-	g "N-Puzzle-Go/golib"
+	l "N-Puzzle-Go/golib"
 	"container/heap"
 	"fmt"
 )
 
-func solutionPath(solution []int, parent *Item) {
-	fmt.Println("SOLUTION")
-	fmt.Println(solution)
+func solutionPath(solution []int, parent *Item) int {
+	i := 0
 	path := parent
-	fmt.Println(path.puzzle)
 	for path.parent != nil {
 		path = path.parent
-		fmt.Println(path.puzzle)
+		i++
 	}
+	return i
 }
 
+// func heuristics() int {
+
+// }
+
 // Solver is the main graph search algorithm
-func Solver(Puzzle []int, size int, solve bool, iterations int) {
+func Solver(Puzzle []int, opt *l.NPuzzleOptions) {
 
-	Solution := g.MakeGoal(size)
+	Solution := l.MakeGoal(opt.Size)
 
-	if IsSolvable(Solution, Puzzle, size) {
+	if IsSolvable(Solution, Puzzle, opt.Size) {
 		// Init closed Set
 		closedSet := make(map[string]int)
 		solutionFound := false
@@ -36,28 +39,29 @@ func Solver(Puzzle []int, size int, solve bool, iterations int) {
 			parent:   nil,
 		}
 		heap.Init(&pq)
-		for pq.Len() > 0 && !solutionFound && round < 10 {
+		for pq.Len() > 0 && !solutionFound {
 			current := heap.Pop(&pq).(*Item)
-			fmt.Println("puzzle", current.puzzle, "h", current.h, "l", current.l, "m", current.m)
-			closedSet[g.PuzzleToString(current.puzzle)] = 1
-			children := CreateNeighbors(current.puzzle, size)
+			// fmt.Println("puzzle", current.puzzle, "h", current.h, "l", current.l, "m", current.m)
+			closedSet[l.PuzzleToString(current.puzzle)] = 1
+			children := CreateNeighbors(current.puzzle, opt.Size)
 
 			i := 0
 			round++
 			for _, childPuzzle := range children {
-				puzzleStr := g.PuzzleToString(childPuzzle)
-				isGoal := g.CheckSliceEquality(childPuzzle, Solution)
+				puzzleStr := l.PuzzleToString(childPuzzle)
+				isGoal := l.CheckSliceEquality(childPuzzle, Solution)
 				_, inClosedSet := closedSet[puzzleStr]
 				if isGoal == true {
 					solutionFound = true
-					solutionPath(childPuzzle, current)
+					// fmt.Println("FOUND")
+					fmt.Println("FOUND IN ", solutionPath(childPuzzle, current), " MOVES")
 					break
 				} else if inClosedSet == true {
 					// Puzzle is in the closed set
 					// We do nothing
 				} else {
-					manhattan := g.Manhattan(childPuzzle, Solution, size)
-					linearConflict := g.LinearConflict(childPuzzle, Solution, size)
+					manhattan := l.Manhattan(childPuzzle, Solution, opt.Size)
+					linearConflict := l.LinearConflict(childPuzzle, Solution, opt.Size)
 					newPuzzle := &Item{
 						priority: manhattan + current.move + 1,
 						move:     current.move + 1,
@@ -71,10 +75,8 @@ func Solver(Puzzle []int, size int, solve bool, iterations int) {
 				}
 				i++
 			}
-
 		}
 	} else {
-		fmt.Println("\nIt is not solvable :( try again")
+		fmt.Println("Puzzle cannot be solved. Please try again :(")
 	}
-
 }

@@ -21,12 +21,13 @@ func swapEmpty(s int, puzzle []int) {
 }
 
 // MakeRandomBoard creates a solvable or not randon board, with X iterations different from target
-func MakeRandomBoard(size int, solvable bool, iterations int) []int {
-	puzzle := MakeGoal(size)
-	for i := 0; i < iterations; i++ {
-		swapEmpty(size, puzzle)
+// func MakeRandomBoard(size int, solvable bool, iterations int) []int {
+func MakeRandomBoard(opt *NPuzzleOptions) []int {
+	puzzle := MakeGoal(opt.Size)
+	for i := 0; i < opt.Iterations; i++ {
+		swapEmpty(opt.Size, puzzle)
 	}
-	if !solvable {
+	if !opt.Solvable {
 		if puzzle[0] == 0 || puzzle[1] == 0 {
 			puzzle[len(puzzle)-1], puzzle[len(puzzle)-2] = puzzle[len(puzzle)-2], puzzle[len(puzzle)-1]
 		} else {
