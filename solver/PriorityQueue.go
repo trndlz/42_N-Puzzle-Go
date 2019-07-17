@@ -4,20 +4,17 @@ import (
 	"container/heap"
 )
 
-// Item represents the data injected in the priority queue
-type Item struct {
+// QueueItem represents the data injected in the priority queue
+type QueueItem struct {
 	index    int
 	priority int
 	move     int
 	puzzle   []int
-	parent   *Item
-	h        int
-	m        int
-	l        int
+	parent   *QueueItem
 }
 
 // PriorityQueue type
-type PriorityQueue []*Item
+type PriorityQueue []*QueueItem
 
 func (pq PriorityQueue) Len() int { return len(pq) }
 
@@ -34,7 +31,7 @@ func (pq PriorityQueue) Swap(i, j int) {
 // Push enqueues an Item to the priority queue
 func (pq *PriorityQueue) Push(x interface{}) {
 	n := len(*pq)
-	item := x.(*Item)
+	item := x.(*QueueItem)
 	item.index = n
 	*pq = append(*pq, item)
 }
@@ -49,7 +46,7 @@ func (pq *PriorityQueue) Pop() interface{} {
 	return item
 }
 
-func (pq *PriorityQueue) update(item *Item, puzzle []int, priority int) {
+func (pq *PriorityQueue) update(item *QueueItem, puzzle []int, priority int) {
 	item.puzzle = puzzle
 	item.priority = priority
 	heap.Fix(pq, item.index)

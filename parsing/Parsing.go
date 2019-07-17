@@ -53,14 +53,4 @@ func GetFlags() *l.NPuzzleOptions {
 		Iterations: *iterationsPtr,
 		Size:       *sizePtr,
 	}
-
-	// return size, solve, iterations, heuristics
 }
-
-// type NPuzzleOptions struct {
-// 	heuristics int
-// 	searchAlgo int
-// 	solvable   bool
-// 	iterations int
-// 	size       int
-// }

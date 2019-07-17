@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func solutionPath(solution []int, parent *Item) int {
+func solutionPath(solution []int, parent *QueueItem) int {
 	i := 0
 	path := parent
 	for path.parent != nil {
@@ -16,23 +16,29 @@ func solutionPath(solution []int, parent *Item) int {
 	return i
 }
 
-// func heuristics() int {
-
-// }
+func heuristics(puzzle []int, target []int, opt *l.NPuzzleOptions) int {
+	if opt.Heuristics == 0 {
+		return l.Manhattan(puzzle, target, opt.Size)
+	} else if opt.Heuristics == 1 {
+		return l.Hamming(puzzle, target, opt.Size)
+	} else {
+		return 2*l.LinearConflict(puzzle, target, opt.Size) + l.Manhattan(puzzle, target, opt.SearchAlgo)
+	}
+}
 
 // Solver is the main graph search algorithm
 func Solver(Puzzle []int, opt *l.NPuzzleOptions) {
 
-	Solution := l.MakeGoal(opt.Size)
+	target := l.MakeGoal(opt.Size)
 
-	if IsSolvable(Solution, Puzzle, opt.Size) {
+	if IsSolvable(target, Puzzle, opt.Size) {
 		// Init closed Set
 		closedSet := make(map[string]int)
 		solutionFound := false
 		round := 0
 		// Init queue
 		pq := make(PriorityQueue, 1)
-		pq[0] = &Item{
+		pq[0] = &QueueItem{
 			priority: 0,
 			move:     0,
 			puzzle:   Puzzle,
@@ -40,7 +46,7 @@ func Solver(Puzzle []int, opt *l.NPuzzleOptions) {
 		}
 		heap.Init(&pq)
 		for pq.Len() > 0 && !solutionFound {
-			current := heap.Pop(&pq).(*Item)
+			current := heap.Pop(&pq).(*QueueItem)
 			// fmt.Println("puzzle", current.puzzle, "h", current.h, "l", current.l, "m", current.m)
 			closedSet[l.PuzzleToString(current.puzzle)] = 1
 			children := CreateNeighbors(current.puzzle, opt.Size)
@@ -49,7 +55,7 @@ func Solver(Puzzle []int, opt *l.NPuzzleOptions) {
 			round++
 			for _, childPuzzle := range children {
 				puzzleStr := l.PuzzleToString(childPuzzle)
-				isGoal := l.CheckSliceEquality(childPuzzle, Solution)
+				isGoal := l.CheckSliceEquality(childPuzzle, target)
 				_, inClosedSet := closedSet[puzzleStr]
 				if isGoal == true {
 					solutionFound = true
@@ -60,16 +66,11 @@ func Solver(Puzzle []int, opt *l.NPuzzleOptions) {
 					// Puzzle is in the closed set
 					// We do nothing
 				} else {
-					manhattan := l.Manhattan(childPuzzle, Solution, opt.Size)
-					linearConflict := l.LinearConflict(childPuzzle, Solution, opt.Size)
-					newPuzzle := &Item{
-						priority: manhattan + current.move + 1,
+					newPuzzle := &QueueItem{
+						priority: heuristics(childPuzzle, target, opt) + current.move + 1,
 						move:     current.move + 1,
 						puzzle:   childPuzzle,
 						parent:   current,
-						h:        manhattan + 2*linearConflict,
-						m:        manhattan,
-						l:        linearConflict,
 					}
 					heap.Push(&pq, newPuzzle)
 				}
