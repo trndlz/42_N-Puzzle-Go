@@ -1,22 +1,22 @@
 package parsing
 
 import (
+	g "N-Puzzle-Go/golib"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
-	g "n-puzzle/golib"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func GenerateRandomBoard(size int, solve bool, iterations int) []int {
 	//	fmt.Println("\nGenerating random board...\n")
 
 	// generate a shuffled set of numbers
+	fmt.Println(solve)
 	maxNb := size * size
 	numbers := g.MakeRangeNum(0, maxNb-1)
 	rand.Shuffle(len(numbers), func(i, j int) {
@@ -77,11 +77,12 @@ func ReadBoardFromFile(Puzzle []int, size int) ([]int, int) {
 	return Puzzle, size
 }
 
-func CheckFlags() (int, bool, int) {
-	sizePtr := flag.Int("size", 1, "Size of the puzzle's side. Must be >3.")
-	solveablePtr := flag.Bool("s", false, "Forces generation of a solvable puzzle. Overrides -u.")
-	unsolveablePtr := flag.Bool("u", false, "Forces generation of an unsolvable puzzle")
-	iterationsPtr := flag.Int("iterations", 100, "Number of passes")
+// GetFlags returns the values of the arguments given from user
+func GetFlags() (int, bool, int) {
+	sizePtr := flag.Int("n", 3, "Puzzle dimension")
+	unsolvablePtr := flag.Bool("u", false, "Unsolveable puzzle (default = false)")
+	iterationsPtr := flag.Int("i", 10, "Puzzle complexity")
+	// filePtr := flag.String("f", "", "Input as file")
 
 	flag.Parse()
 	args := flag.Args()
@@ -108,26 +109,12 @@ func CheckFlags() (int, bool, int) {
 		os.Exit(1)
 	}
 
-	if *solveablePtr && *unsolveablePtr {
-		fmt.Println("Can't be both solvable AND unsolvable, dummy!")
-		os.Exit(1)
-	}
-
 	if *iterationsPtr < 1 {
 		fmt.Println("Can't solve a puzzle in less than 1 iteration!")
 		os.Exit(1)
 	}
 
-	var solve bool
-	if !(*solveablePtr) && !(*unsolveablePtr) {
-		rand.Seed(time.Now().UnixNano())
-		solve = g.RandomBool()
-	} else if *solveablePtr {
-		solve = true
-	} else if *unsolveablePtr {
-		solve = false
-	}
-
+	solve := !*unsolvablePtr
 	size := *sizePtr
 	iterations := *iterationsPtr
 

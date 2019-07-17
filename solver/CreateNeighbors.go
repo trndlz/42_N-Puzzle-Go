@@ -1,8 +1,8 @@
 package solver
 
 import (
+	g "N-Puzzle-Go/golib"
 	"fmt"
-	g "n-puzzle/golib"
 )
 
 // look at current board for potential moves

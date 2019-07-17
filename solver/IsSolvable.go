@@ -1,7 +1,7 @@
 package solver
 
 import (
-	g "n-puzzle/golib"
+	g "N-Puzzle-Go/golib"
 )
 
 func countInversions(puzzle []int) int {

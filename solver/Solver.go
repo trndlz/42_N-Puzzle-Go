@@ -1,9 +1,9 @@
 package solver
 
 import (
+	g "N-Puzzle-Go/golib"
 	"container/heap"
 	"fmt"
-	g "n-puzzle/golib"
 )
 
 func solutionPath(solution []int, parent *Item) {
@@ -20,7 +20,7 @@ func solutionPath(solution []int, parent *Item) {
 // Solver is the main graph search algorithm
 func Solver(Puzzle []int, size int, solve bool, iterations int) {
 
-	Solution := MakeGoal(size)
+	Solution := g.MakeGoal(size)
 
 	if IsSolvable(Solution, Puzzle, size) {
 		// Init closed Set

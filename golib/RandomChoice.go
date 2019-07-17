@@ -5,8 +5,9 @@ import (
 	"time"
 )
 
-func RandomChoice(Poss []int) int {
-	rand.Seed(time.Now().Unix())
-	swi := rand.Intn(len(Poss))
-	return swi
+// RandomChoice returns a random index of an array
+func RandomChoice(arr []int) int {
+	rand.Seed(time.Now().UnixNano())
+	a := rand.Intn(len(arr))
+	return arr[a]
 }
