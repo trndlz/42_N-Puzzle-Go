@@ -11,6 +11,9 @@ type Item struct {
 	move     int
 	puzzle   []int
 	parent   *Item
+	h        int
+	m        int
+	l        int
 }
 
 // PriorityQueue type

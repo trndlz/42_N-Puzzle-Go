@@ -36,11 +36,12 @@ func Solver(Puzzle []int, size int, solve bool, iterations int) {
 			parent:   nil,
 		}
 		heap.Init(&pq)
-		for pq.Len() > 0 && !solutionFound {
+		for pq.Len() > 0 && !solutionFound && round < 10 {
 			current := heap.Pop(&pq).(*Item)
-			// fmt.Println("priority", current.priority, "puzzle", current.puzzle, "move", current.move, "round", round)
+			fmt.Println("puzzle", current.puzzle, "h", current.h, "l", current.l, "m", current.m)
 			closedSet[g.PuzzleToString(current.puzzle)] = 1
 			children := CreateNeighbors(current.puzzle, size)
+
 			i := 0
 			round++
 			for _, childPuzzle := range children {
@@ -56,11 +57,15 @@ func Solver(Puzzle []int, size int, solve bool, iterations int) {
 					// We do nothing
 				} else {
 					manhattan := g.Manhattan(childPuzzle, Solution, size)
+					linearConflict := g.LinearConflict(childPuzzle, Solution, size)
 					newPuzzle := &Item{
 						priority: manhattan + current.move + 1,
 						move:     current.move + 1,
 						puzzle:   childPuzzle,
 						parent:   current,
+						h:        2*manhattan + linearConflict,
+						m:        manhattan,
+						l:        linearConflict,
 					}
 					heap.Push(&pq, newPuzzle)
 				}
