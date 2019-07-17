@@ -63,7 +63,7 @@ func Solver(Puzzle []int, size int, solve bool, iterations int) {
 						move:     current.move + 1,
 						puzzle:   childPuzzle,
 						parent:   current,
-						h:        2*manhattan + linearConflict,
+						h:        manhattan + 2*linearConflict,
 						m:        manhattan,
 						l:        linearConflict,
 					}
