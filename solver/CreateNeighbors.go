@@ -36,6 +36,7 @@ func checkMoves(width int, i int) (int, int, int, int) {
 	return up, down, left, right
 }
 
+// CreateNeighbors returns a map of all next neighbours
 func CreateNeighbors(puzzle []int, size int) map[string][]int {
 
 	empty := g.FindIndexSlice(puzzle, 0)

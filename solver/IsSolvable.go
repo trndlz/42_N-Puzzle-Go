@@ -16,7 +16,7 @@ func countInversions(puzzle []int) int {
 	return inversions
 }
 
-// Trestan : I tested this function, should be working
+// IsSolvable tests if a puzzle is solvable or not
 func IsSolvable(solution []int, puzzle []int, size int) bool {
 	pInversions := countInversions(puzzle)
 	sInversions := countInversions(solution)

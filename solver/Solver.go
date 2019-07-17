@@ -6,16 +6,25 @@ import (
 	g "n-puzzle/golib"
 )
 
+func solutionPath(solution []int, parent *Item) {
+	fmt.Println("SOLUTION")
+	fmt.Println(solution)
+	path := parent
+	fmt.Println(path.puzzle)
+	for path.parent != nil {
+		path = path.parent
+		fmt.Println(path.puzzle)
+	}
+}
+
 // Solver is the main graph search algorithm
 func Solver(Puzzle []int, size int, solve bool, iterations int) {
 
 	Solution := MakeGoal(size)
 
 	if IsSolvable(Solution, Puzzle, size) {
-		fmt.Println("\nI love you")
 		// Init closed Set
 		closedSet := make(map[string]int)
-
 		solutionFound := false
 		round := 0
 		// Init queue
@@ -24,9 +33,9 @@ func Solver(Puzzle []int, size int, solve bool, iterations int) {
 			priority: 0,
 			move:     0,
 			puzzle:   Puzzle,
+			parent:   nil,
 		}
 		heap.Init(&pq)
-
 		for pq.Len() > 0 && !solutionFound {
 			current := heap.Pop(&pq).(*Item)
 			// fmt.Println("priority", current.priority, "puzzle", current.puzzle, "move", current.move, "round", round)
@@ -40,6 +49,7 @@ func Solver(Puzzle []int, size int, solve bool, iterations int) {
 				_, inClosedSet := closedSet[puzzleStr]
 				if isGoal == true {
 					solutionFound = true
+					solutionPath(childPuzzle, current)
 					break
 				} else if inClosedSet == true {
 					// Puzzle is in the closed set
@@ -58,9 +68,6 @@ func Solver(Puzzle []int, size int, solve bool, iterations int) {
 			}
 
 		}
-		fmt.Println(solutionFound)
-		fmt.Println(Puzzle)
-
 	} else {
 		fmt.Println("\nIt is not solvable :( try again")
 	}

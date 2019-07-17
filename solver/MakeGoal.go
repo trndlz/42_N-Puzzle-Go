@@ -1,5 +1,6 @@
 package solver
 
+// MakeGoal creates spiral array / N-Puzzle target
 func MakeGoal(size int) []int {
 	left, top, right, bottom := 0, 0, size-1, size-1
 	puzzle := make([]int, size*size)

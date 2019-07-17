@@ -4,6 +4,7 @@ import (
 	"container/heap"
 )
 
+// Item represents the data injected in the priority queue
 type Item struct {
 	index    int
 	priority int
@@ -12,6 +13,7 @@ type Item struct {
 	parent   *Item
 }
 
+// PriorityQueue type
 type PriorityQueue []*Item
 
 func (pq PriorityQueue) Len() int { return len(pq) }
@@ -26,6 +28,7 @@ func (pq PriorityQueue) Swap(i, j int) {
 	pq[j].index = j
 }
 
+// Push enqueues an Item to the priority queue
 func (pq *PriorityQueue) Push(x interface{}) {
 	n := len(*pq)
 	item := x.(*Item)
@@ -33,6 +36,7 @@ func (pq *PriorityQueue) Push(x interface{}) {
 	*pq = append(*pq, item)
 }
 
+// Pop returns the first element of the queue and removes it from it
 func (pq *PriorityQueue) Pop() interface{} {
 	old := *pq
 	n := len(old)
