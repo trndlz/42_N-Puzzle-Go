@@ -5,13 +5,6 @@ import (
 	"fmt"
 )
 
-// look at current board for potential moves
-// count n potential moves
-// check if move is valid
-// generate n boards for n moves
-// ... how to check if board is duplicate?
-
-// Checks which directions the zero tile can move in
 func checkMoves(width int, i int) (int, int, int, int) {
 	up, down, left, right := 0, 0, 0, 0
 	length := width * width
