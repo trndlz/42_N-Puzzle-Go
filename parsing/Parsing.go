@@ -1,14 +1,14 @@
 package parsing
 
 import (
-	l "N-Puzzle-Go/golib"
+	t "N-Puzzle-Go/types"
 	"flag"
 	"fmt"
 	"os"
 )
 
 // GetFlags returns the values of the arguments given from user
-func GetFlags() *l.NPuzzleOptions {
+func GetFlags() *t.NPuzzleOptions {
 	sizePtr := flag.Int("n", 3, "🚀  Puzzle dimension (min 3, max 5)")
 	unsolvablePtr := flag.Bool("u", false, "⛔  Unsolveable puzzle (default = false)")
 	iterationsPtr := flag.Int("i", 200, "⏳  Random puzzle iterations (min 1)")
@@ -29,7 +29,7 @@ func GetFlags() *l.NPuzzleOptions {
 		os.Exit(1)
 	}
 
-	return &l.NPuzzleOptions{
+	return &t.NPuzzleOptions{
 		Heuristics: *heuristicsPtr,
 		SearchAlgo: 0,
 		Solvable:   !*unsolvablePtr,

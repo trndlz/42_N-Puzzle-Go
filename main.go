@@ -1,9 +1,10 @@
 package main
 
 import (
-	l "N-Puzzle-Go/golib"
 	p "N-Puzzle-Go/parsing"
+	z "N-Puzzle-Go/puzzles"
 	s "N-Puzzle-Go/solver"
+	t "N-Puzzle-Go/types"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -39,11 +40,11 @@ func main() {
 		}
 
 	} else {
-		var input *l.Input
+		var input *t.InputData
 		if len(options.File) > 0 {
 			input = p.ParseFile(options.File)
 		} else {
-			input = l.MakeRandomBoard(options)
+			input = z.MakeRandomBoard(options)
 		}
 		if len(input.Errors) > 0 {
 			fmt.Println("🤖  \033[0;31mI cannot read your puzzle input !\033[0m")

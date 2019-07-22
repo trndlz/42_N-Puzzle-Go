@@ -1,4 +1,4 @@
-package golib
+package puzzles
 
 // MakeGoal returns a spiral target matrix of size s
 func MakeGoal(s int) []int {

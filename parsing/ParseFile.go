@@ -1,7 +1,7 @@
 package parsing
 
 import (
-	l "N-Puzzle-Go/golib"
+	t "N-Puzzle-Go/types"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -18,7 +18,7 @@ func containsSize(len int) bool {
 }
 
 // ParseFile returns a puzzle
-func ParseFile(path string) *l.Input {
+func ParseFile(path string) *t.InputData {
 	var errors []string
 	var puzzle []int
 
@@ -46,7 +46,7 @@ func ParseFile(path string) *l.Input {
 		}
 	}
 
-	return &l.Input{
+	return &t.InputData{
 		Puzzle: puzzle,
 		Errors: errors,
 	}

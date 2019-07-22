@@ -1,7 +1,21 @@
-package golib
+package puzzles
+
+import (
+	l "N-Puzzle-Go/golib"
+	t "N-Puzzle-Go/types"
+	"math/rand"
+	"time"
+)
+
+// RandomChoice returns a random index of an array
+func RandomChoice(arr []int) int {
+	rand.Seed(time.Now().UnixNano())
+	a := rand.Intn(len(arr))
+	return arr[a]
+}
 
 func swapEmpty(s int, puzzle []int) {
-	idx := FindIndexSlice(puzzle, 0)
+	idx := l.FindIndexSlice(puzzle, 0)
 	var poss []int
 	if idx%s > 0 {
 		poss = append(poss, idx-1)
@@ -22,7 +36,7 @@ func swapEmpty(s int, puzzle []int) {
 
 // MakeRandomBoard creates a solvable or not randon board, with X iterations different from target
 // func MakeRandomBoard(size int, solvable bool, iterations int) []int {
-func MakeRandomBoard(opt *NPuzzleOptions) *Input {
+func MakeRandomBoard(opt *t.NPuzzleOptions) *t.InputData {
 	puzzle := MakeGoal(opt.Size)
 	var errors []string
 	for i := 0; i < opt.Iterations; i++ {
@@ -35,7 +49,7 @@ func MakeRandomBoard(opt *NPuzzleOptions) *Input {
 			puzzle[0], puzzle[1] = puzzle[1], puzzle[0]
 		}
 	}
-	return &Input{
+	return &t.InputData{
 		Puzzle: puzzle,
 		Errors: errors,
 	}

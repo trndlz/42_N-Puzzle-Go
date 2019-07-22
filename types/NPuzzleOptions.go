@@ -1,4 +1,4 @@
-package golib
+package types
 
 // NPuzzleOptions is everything you ever wanted to specify about your inputs
 type NPuzzleOptions struct {

@@ -1,4 +1,4 @@
-package golib
+package puzzles
 
 func CheckSliceEquality(a []int, b []int) bool {
 	if len(a) != len(b) {

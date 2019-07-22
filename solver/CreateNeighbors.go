@@ -1,7 +1,7 @@
 package solver
 
 import (
-	g "N-Puzzle-Go/golib"
+	l "N-Puzzle-Go/golib"
 	"fmt"
 )
 
@@ -32,7 +32,7 @@ func checkMoves(width int, i int) (int, int, int, int) {
 // CreateNeighbors returns a map of all next neighbours
 func CreateNeighbors(puzzle []int, size int) map[string][]int {
 
-	empty := g.FindIndexSlice(puzzle, 0)
+	empty := l.FindIndexSlice(puzzle, 0)
 	up, down, left, right := checkMoves(size, empty)
 	moves := up + down + left + right
 	neighbors := map[string][]int{}

@@ -1,4 +1,8 @@
-package golib
+package solver
+
+import (
+	l "N-Puzzle-Go/golib"
+)
 
 func indexToCoordinates(index int, size int) (int, int) {
 	x := index % size
@@ -14,12 +18,12 @@ func absInt(val int) int {
 }
 
 func valueCoordinates(board []int, val int, size int) (int, int) {
-	index := FindIndexSlice(board, val)
+	index := l.FindIndexSlice(board, val)
 	return indexToCoordinates(index, size)
 }
 
 func manhattanDistance(val int, indexBoard int, size int, target []int) int {
-	indexTarget := FindIndexSlice(target, val)
+	indexTarget := l.FindIndexSlice(target, val)
 	xT, yT := indexToCoordinates(indexTarget, size)
 	xC, yC := indexToCoordinates(indexBoard, size)
 	return (absInt(xT-xC) + absInt(yT-yC))

@@ -1,7 +1,8 @@
 package solver
 
 import (
-	l "N-Puzzle-Go/golib"
+	z "N-Puzzle-Go/puzzles"
+	t "N-Puzzle-Go/types"
 	"container/heap"
 	"fmt"
 )
@@ -16,20 +17,20 @@ func solutionPath(solution []int, parent *QueueItem) int {
 	return i
 }
 
-func heuristics(puzzle []int, target []int, opt *l.NPuzzleOptions) int {
+func heuristics(puzzle []int, target []int, opt *t.NPuzzleOptions) int {
 	if opt.Heuristics == 0 {
-		return l.Manhattan(puzzle, target, opt.Size)
+		return Manhattan(puzzle, target, opt.Size)
 	} else if opt.Heuristics == 1 {
-		return l.Hamming(puzzle, target, opt.Size)
+		return Hamming(puzzle, target, opt.Size)
 	} else {
-		return 2*l.LinearConflict(puzzle, target, opt.Size) + l.Manhattan(puzzle, target, opt.SearchAlgo)
+		return 2*LinearConflict(puzzle, target, opt.Size) + Manhattan(puzzle, target, opt.SearchAlgo)
 	}
 }
 
 // Solver is the main graph search algorithm
-func Solver(Puzzle []int, opt *l.NPuzzleOptions) {
+func Solver(Puzzle []int, opt *t.NPuzzleOptions) {
 
-	target := l.MakeGoal(opt.Size)
+	target := z.MakeGoal(opt.Size)
 
 	if IsSolvable(target, Puzzle, opt.Size) {
 		// Init closed Set
@@ -48,14 +49,14 @@ func Solver(Puzzle []int, opt *l.NPuzzleOptions) {
 		for pq.Len() > 0 && !solutionFound {
 			current := heap.Pop(&pq).(*QueueItem)
 			// fmt.Println("puzzle", current.puzzle, "h", current.h, "l", current.l, "m", current.m)
-			closedSet[l.PuzzleToString(current.puzzle)] = 1
+			closedSet[z.PuzzleToString(current.puzzle)] = 1
 			children := CreateNeighbors(current.puzzle, opt.Size)
 
 			i := 0
 			round++
 			for _, childPuzzle := range children {
-				puzzleStr := l.PuzzleToString(childPuzzle)
-				isGoal := l.CheckSliceEquality(childPuzzle, target)
+				puzzleStr := z.PuzzleToString(childPuzzle)
+				isGoal := z.CheckSliceEquality(childPuzzle, target)
 				_, inClosedSet := closedSet[puzzleStr]
 				if isGoal == true {
 					solutionFound = true
