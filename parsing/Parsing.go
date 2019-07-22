@@ -5,44 +5,27 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 )
 
 // GetFlags returns the values of the arguments given from user
 func GetFlags() *l.NPuzzleOptions {
-	sizePtr := flag.Int("n", 3, "Puzzle dimension")
-	unsolvablePtr := flag.Bool("u", false, "Unsolveable puzzle (default = false)")
-	iterationsPtr := flag.Int("i", 200, "Puzzle complexity")
-	heuristicsPtr := flag.Int("h", 0, "Heuristics:\n\t0: Manhattan\n\t1: Hamming\n\t2: Linear Conflict")
-	// filePtr := flag.String("f", "", "Input as file")
+	sizePtr := flag.Int("n", 3, "🚀  Puzzle dimension (min 3, max 5)")
+	unsolvablePtr := flag.Bool("u", false, "⛔  Unsolveable puzzle (default = false)")
+	iterationsPtr := flag.Int("i", 200, "⏳  Random puzzle iterations (min 1)")
+	heuristicsPtr := flag.Int("h", 0, "🌍  Heuristics:\n\t0: Manhattan\n\t1: Hamming\n\t2: Linear Conflict")
+	filePtr := flag.String("f", "", "📁  Input as file")
+	serverPtr := flag.Bool("s", false, "📡  Launch N-Puzzle as server")
 
 	flag.Parse()
-	args := flag.Args()
-
-	arg := strings.Join(args, "")
-	file := strings.Contains(arg, ".txt")
-
-	// if len(args) == 1 && file {
-	// 	return 0, 0, false, 0
-	// }
-
-	if len(args) > 1 && file {
-		fmt.Println("Error: must input one file OR flags as argument.")
-		os.Exit(1)
-	}
-
-	if *sizePtr < 3 {
-		flag.PrintDefaults() // replace with Print Usage
-		os.Exit(1)
-	}
-
-	if sizePtr == nil {
-		fmt.Println("Error: please give a board size.")
+	if *sizePtr < 3 || *sizePtr > 5 {
+		fmt.Println("🤖  \033[0;31mI cannot solve such puzzles !\033[0m")
+		fmt.Println("\t- It's mininimum size must be between 3 and 5 !")
 		os.Exit(1)
 	}
 
 	if *iterationsPtr < 1 {
-		fmt.Println("Can't solve a puzzle in less than 1 iteration!")
+		fmt.Println("🤖  \033[0;31mI cannot solve such puzzles !\033[0m")
+		fmt.Println("\t- The random puzzle needs more than 1 iteration !")
 		os.Exit(1)
 	}
 
@@ -52,5 +35,7 @@ func GetFlags() *l.NPuzzleOptions {
 		Solvable:   !*unsolvablePtr,
 		Iterations: *iterationsPtr,
 		Size:       *sizePtr,
+		File:       *filePtr,
+		Server:     *serverPtr,
 	}
 }

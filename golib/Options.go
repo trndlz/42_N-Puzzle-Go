@@ -7,4 +7,6 @@ type NPuzzleOptions struct {
 	Solvable   bool
 	Iterations int
 	Size       int
+	File       string
+	Server     bool
 }
