@@ -7,6 +7,16 @@ import (
 	"os"
 )
 
+func heuristicsDescription(i int) string {
+	if i == 0 {
+		return "MANHATTAN"
+	} else if i == 1 {
+		return "HAMMING"
+	} else {
+		return "MIXED_LINEAR_CONFLICT_MANHATTAN"
+	}
+}
+
 // GetFlags returns the values of the arguments given from user
 func GetFlags() *t.NPuzzleOptions {
 	sizePtr := flag.Int("n", 3, "🚀  Puzzle dimension (min 3, max 5)")
@@ -30,7 +40,7 @@ func GetFlags() *t.NPuzzleOptions {
 	}
 
 	return &t.NPuzzleOptions{
-		Heuristics: *heuristicsPtr,
+		Heuristics: heuristicsDescription(*heuristicsPtr),
 		SearchAlgo: 0,
 		Solvable:   !*unsolvablePtr,
 		Iterations: *iterationsPtr,

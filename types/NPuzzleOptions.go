@@ -2,7 +2,7 @@ package types
 
 // NPuzzleOptions is everything you ever wanted to specify about your inputs
 type NPuzzleOptions struct {
-	Heuristics int
+	Heuristics string
 	SearchAlgo int
 	Solvable   bool
 	Iterations int

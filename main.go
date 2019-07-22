@@ -7,7 +7,7 @@ import (
 	t "N-Puzzle-Go/types"
 	"encoding/json"
 	"fmt"
-	"log"
+	"math"
 	"net/http"
 	"os"
 )
@@ -21,12 +21,28 @@ type POSTData struct {
 
 func webServer(rw http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
-	var t POSTData
-	err := decoder.Decode(&t)
+	var postData POSTData
+	err := decoder.Decode(&postData)
 	if err != nil {
 		panic(err)
 	}
-	log.Println(t)
+	var errors []string
+	var input = t.InputData{
+		Puzzle: p.PuzzleStringToArray(postData.RawPuzzle, &errors),
+		Errors: errors,
+	}
+	if len(input.Errors) > 0 {
+		fmt.Println("C'EST LA HESS")
+	} else {
+		opt := t.NPuzzleOptions{
+			Heuristics: postData.Heuristics,
+			Size:       int(math.Floor(math.Sqrt(float64(len(input.Puzzle))))),
+		}
+		solution := s.Solver(input.Puzzle, &opt)
+		rw.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(rw).Encode(solution)
+	}
+
 }
 
 func main() {
@@ -42,7 +58,8 @@ func main() {
 	} else {
 		var input *t.InputData
 		if len(options.File) > 0 {
-			input = p.ParseFile(options.File)
+			input = p.FileToPuzzle(options.File)
+			options.Size = int(math.Floor(math.Sqrt(float64(len(input.Puzzle)))))
 		} else {
 			input = z.MakeRandomBoard(options)
 		}
@@ -52,7 +69,14 @@ func main() {
 				fmt.Println("\t- " + indError)
 			}
 		} else {
-			s.Solver(input.Puzzle, options)
+			solution := s.Solver(input.Puzzle, options)
+			// fmt.Println(popopo)
+			fmt.Println("⏰  Duration: ", solution.Timer.String())
+			fmt.Println("👞  Moves: ", solution.Moves)
+			for a := 0; a < len(solution.Path); a++ {
+				z.PrintBoard(solution.Path[a], options.Size)
+			}
+
 		}
 		os.Exit(1)
 	}

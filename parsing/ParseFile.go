@@ -17,37 +17,39 @@ func containsSize(len int) bool {
 	return false
 }
 
-// ParseFile returns a puzzle
-func ParseFile(path string) *t.InputData {
+// FileToPuzzle reads a puzzle from a file
+func FileToPuzzle(path string) *t.InputData {
 	var errors []string
-	var puzzle []int
-
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		errors = append(errors, "File reading error: "+err.Error())
-	} else {
-		str := string(data)
-		lines := strings.Split(str, "\n")
-		for _, line := range lines {
-			if len(line) > 1 && line[0] != '#' {
-				numbersStr := strings.Fields(line)
-				for _, numberStr := range numbersStr {
-					number, atoiErr := strconv.Atoi(numberStr)
-					if atoiErr == nil {
-						puzzle = append(puzzle, number)
-					} else {
-						errors = append(errors, "Syntax error: "+atoiErr.Error())
-					}
-				}
-			}
-		}
-		if !containsSize(len(puzzle)) {
-			errors = append(errors, "Input puzzle is not square !")
-		}
 	}
-
+	puzzle := PuzzleStringToArray(string(data), &errors)
 	return &t.InputData{
 		Puzzle: puzzle,
 		Errors: errors,
 	}
+}
+
+// PuzzleStringToArray converts a puzzle as string to an array
+func PuzzleStringToArray(puzzleStr string, errors *[]string) []int {
+	var puzzle []int
+	lines := strings.Split(puzzleStr, "\n")
+	for _, line := range lines {
+		if len(line) > 1 && line[0] != '#' {
+			numbersStr := strings.Fields(line)
+			for _, numberStr := range numbersStr {
+				number, atoiErr := strconv.Atoi(numberStr)
+				if atoiErr == nil {
+					puzzle = append(puzzle, number)
+				} else {
+					*errors = append(*errors, "Syntax error: "+atoiErr.Error())
+				}
+			}
+		}
+	}
+	if !containsSize(len(puzzle)) {
+		*errors = append(*errors, "Input puzzle is not square !")
+	}
+	return puzzle
 }
