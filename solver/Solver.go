@@ -4,12 +4,11 @@ import (
 	z "N-Puzzle-Go/puzzles"
 	t "N-Puzzle-Go/types"
 	"container/heap"
-	"fmt"
 	"time"
 )
 
 func solutionPath(solution []int, parent *QueueItem) [][]int {
-	path := [][]int{parent.puzzle}
+	path := [][]int{solution, parent.puzzle}
 	current := parent
 	for current.parent != nil {
 		current = current.parent
@@ -24,7 +23,9 @@ func heuristics(puzzle []int, target []int, opt *t.NPuzzleOptions) int {
 	} else if opt.Heuristics == "HAMMING" {
 		return Hamming(puzzle, target, opt.Size)
 	} else {
-		return 2*LinearConflict(puzzle, target, opt.Size) + Manhattan(puzzle, target, opt.SearchAlgo)
+		m := Manhattan(puzzle, target, opt.Size)
+		l := LinearConflict(puzzle, target, opt.Size)
+		return 2*l + m
 	}
 }
 
@@ -44,10 +45,7 @@ func initPriorityQueue(puzzle []int) PriorityQueue {
 func Solver(Puzzle []int, opt *t.NPuzzleOptions) *t.OutputData {
 
 	target := z.MakeGoal(opt.Size)
-	fmt.Println(Puzzle)
-	fmt.Println(opt.Size)
 	if !IsSolvable(target, Puzzle, opt.Size) {
-		fmt.Println(IsSolvable(target, Puzzle, opt.Size))
 		return &t.OutputData{Error: true}
 	}
 
@@ -56,13 +54,17 @@ func Solver(Puzzle []int, opt *t.NPuzzleOptions) *t.OutputData {
 	round := 0
 	pq := initPriorityQueue(Puzzle)
 	start := time.Now()
+	timeComplexity := 1
+	sizeComplexity := 0
 	for pq.Len() > 0 && !solutionFound && round < 10000000 {
 		current := heap.Pop(&pq).(*QueueItem)
 		closedSet[z.PuzzleToString(current.puzzle)] = 1
 		children := CreateNeighbors(current.puzzle, opt.Size)
-
-		i := 0
 		round++
+		openQueueLength := pq.Len()
+		if openQueueLength > sizeComplexity {
+			sizeComplexity = openQueueLength
+		}
 		for _, childPuzzle := range children {
 			puzzleStr := z.PuzzleToString(childPuzzle)
 			isGoal := z.CheckSliceEquality(childPuzzle, target)
@@ -71,12 +73,14 @@ func Solver(Puzzle []int, opt *t.NPuzzleOptions) *t.OutputData {
 				solutionFound = true
 				solutionPath := solutionPath(childPuzzle, current)
 				return &t.OutputData{
-					Error:      false,
-					Moves:      len(solutionPath),
-					Path:       solutionPath,
-					Heuristics: opt.Heuristics,
-					SearchAlgo: "A_STAR",
-					Timer:      time.Since(start),
+					Error:          false,
+					Moves:          len(solutionPath),
+					Path:           solutionPath,
+					Heuristics:     opt.Heuristics,
+					SearchAlgo:     "A_STAR",
+					Timer:          time.Since(start),
+					SizeComplexity: sizeComplexity,
+					TimeComplexity: timeComplexity,
 				}
 			} else if inClosedSet == true {
 				// Puzzle is in the closed set
@@ -88,9 +92,9 @@ func Solver(Puzzle []int, opt *t.NPuzzleOptions) *t.OutputData {
 					puzzle:   childPuzzle,
 					parent:   current,
 				}
+				timeComplexity++
 				heap.Push(&pq, newPuzzle)
 			}
-			i++
 		}
 	}
 	return &t.OutputData{

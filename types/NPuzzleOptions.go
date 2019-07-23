@@ -9,4 +9,5 @@ type NPuzzleOptions struct {
 	Size       int
 	File       string
 	Server     bool
+	Verbose    bool
 }

@@ -45,8 +45,33 @@ func webServer(rw http.ResponseWriter, req *http.Request) {
 
 }
 
-func main() {
+func printSolution(puzzle []int, options *t.NPuzzleOptions) {
+	solution := s.Solver(puzzle, options)
+	if !solution.Error {
+		if options.Verbose == true {
+			z.PrintPath(solution.Path, options.Size)
+		} else {
+			fmt.Println("Solved Puzzle:")
+			fmt.Println("")
+			z.PrintBoard(puzzle, options.Size)
+		}
+		fmt.Println("⏰  Duration: ", solution.Timer.String())
+		fmt.Println("👞  Moves: ", solution.Moves)
+		fmt.Println("🏇  Size Complexity: ", solution.SizeComplexity)
+		fmt.Println("⌛  Time Complexity: ", solution.TimeComplexity)
+	} else {
+		fmt.Println("Puzzle is not solvable")
+	}
+}
 
+func printInputErrors(input *t.InputData) {
+	fmt.Println("🤖  \033[0;31mI cannot read your puzzle input !\033[0m")
+	for _, indError := range input.Errors {
+		fmt.Println("\t- " + indError)
+	}
+}
+
+func main() {
 	options := p.GetFlags()
 	if options.Server == true {
 		fmt.Println("🚒   N-Puzzle server launched on port 5000")
@@ -54,7 +79,6 @@ func main() {
 		if err := http.ListenAndServe(":5000", nil); err != nil {
 			panic(err)
 		}
-
 	} else {
 		var input *t.InputData
 		if len(options.File) > 0 {
@@ -64,19 +88,9 @@ func main() {
 			input = z.MakeRandomBoard(options)
 		}
 		if len(input.Errors) > 0 {
-			fmt.Println("🤖  \033[0;31mI cannot read your puzzle input !\033[0m")
-			for _, indError := range input.Errors {
-				fmt.Println("\t- " + indError)
-			}
+			printInputErrors(input)
 		} else {
-			solution := s.Solver(input.Puzzle, options)
-			// fmt.Println(popopo)
-			fmt.Println("⏰  Duration: ", solution.Timer.String())
-			fmt.Println("👞  Moves: ", solution.Moves)
-			for a := 0; a < len(solution.Path); a++ {
-				z.PrintBoard(solution.Path[a], options.Size)
-			}
-
+			printSolution(input.Puzzle, options)
 		}
 		os.Exit(1)
 	}

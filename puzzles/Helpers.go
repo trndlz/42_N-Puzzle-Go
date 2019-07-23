@@ -6,14 +6,23 @@ import (
 	"strings"
 )
 
+func PrintPath(path [][]int, size int) {
+	length := len(path)
+	for a := length - 1; a >= 0; a-- {
+		PrintBoard(path[a], size)
+		if a != 0 {
+			fmt.Println()
+		}
+	}
+}
+
 // PrintBoard prints a 2D representation of a Puzzle
 func PrintBoard(slice []int, size int) {
 	i := 0
-	fmt.Print("\n\n")
 	for y := 0; y < size; y++ {
 		for x := 0; x < size; x++ {
 			if slice[i] == 0 {
-				fmt.Printf("%v   ", "#")
+				fmt.Printf("%v   ", "🕳️")
 			} else if slice[i] < 10 {
 				fmt.Printf("%v   ", slice[i])
 			} else {
@@ -23,6 +32,7 @@ func PrintBoard(slice []int, size int) {
 		}
 		fmt.Print("\n")
 	}
+	fmt.Print("\n")
 }
 
 // PuzzleToString converts a Puzzle []int to a string

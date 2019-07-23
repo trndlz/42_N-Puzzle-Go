@@ -21,6 +21,7 @@ func heuristicsDescription(i int) string {
 func GetFlags() *t.NPuzzleOptions {
 	sizePtr := flag.Int("n", 3, "🚀  Puzzle dimension (min 3, max 5)")
 	unsolvablePtr := flag.Bool("u", false, "⛔  Unsolveable puzzle (default = false)")
+	verbosePtr := flag.Bool("v", false, "🛣️  Displays solution path entirely")
 	iterationsPtr := flag.Int("i", 200, "⏳  Random puzzle iterations (min 1)")
 	heuristicsPtr := flag.Int("h", 0, "🌍  Heuristics:\n\t0: Manhattan\n\t1: Hamming\n\t2: Linear Conflict")
 	filePtr := flag.String("f", "", "📁  Input as file")
@@ -47,5 +48,6 @@ func GetFlags() *t.NPuzzleOptions {
 		Size:       *sizePtr,
 		File:       *filePtr,
 		Server:     *serverPtr,
+		Verbose:    *verbosePtr,
 	}
 }
